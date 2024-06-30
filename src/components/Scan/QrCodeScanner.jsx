@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
-// import { Scanner } from '@yudiel/react-qr-scanner';
 import { QrReader } from 'react-qr-reader';
 import s from './qrCodeScanner.module.css';
 
@@ -8,76 +6,31 @@ import { SCAN_DATA } from '../../constants';
 
 export const QrCodeScanner = () => {
     const [scanned, setScanned] = useState(null);
-    const [isReady, setIsReady] = useState(false);
 
     const scanHandler = (result) => {
-        console.log('result', result);
-        setScanned(result[0].rawValue);
+        if (!result) return;
 
         const prevData = JSON.parse(localStorage.getItem(SCAN_DATA) || '[]');
 
+        if (prevData.includes(result.text)) return;
+
+        setScanned(result.text);
+
         localStorage.setItem(
             SCAN_DATA,
-            JSON.stringify([...prevData, result[0].rawValue])
+            JSON.stringify([...prevData, result.text])
         );
     };
 
-
-    useEffect(() => {
-        // if (!isReady) return;
-
-        const onScanSuccess = (decodedText, decodedResult) => {
-            console.log('decodedText', decodedText)
-            console.log('decodedResult', decodedResult)
-          };
-      
-          const onScanFailure = (errorMessage, error) => {
-            
-          };
-        const config = {
-            fps: 10,
-            qrbox: {
-              width: 350,
-              height: 250,
-            },
-          };
-
-          const reader = new Html5Qrcode('video');
-
-          if (isReady) {
-            reader.start({ facingMode: 'environment' }, config, (result) => {
-                console.log('result', result)
-              })
-          }
-         
-    }, [isReady]);
-
     return (
         <div className={s.container}>
-
-            {/* <div id="video" className='test' /> */}
-
             <QrReader
-                onResult={(result, error) => {
-                console.log('result', result)
-                }}
-                containerStyle={{ width: '300px' }}
+                scanDelay={1000}
+                onResult={scanHandler}
+                containerStyle={{ width: '500px' }}
             />
-            
-            {/* <Scanner
-                allowMultiple
-                onScan={scanHandler}
-                components={{
-                    audio: false,
-                    finder: false,
-                }}
-                styles={{
-                    container: { width: 300 }
-                }}
-            /> */}
+        
             <p className={s.result}>{scanned}</p>
-
-            {/* <button onClick={() => setIsReady(!isReady)}>test</button> */}
         </div>
     );
 };
