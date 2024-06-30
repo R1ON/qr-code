@@ -6,6 +6,7 @@ export const GenerateHistory = () => {
 
     return (
         <div>
+            Изменения
             {data.map((text) => (
                 <p key={text}>
                     {text}
