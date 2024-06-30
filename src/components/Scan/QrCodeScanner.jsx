@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { QrReader } from 'react-qr-reader';
 import s from './qrCodeScanner.module.css';
 
@@ -25,6 +25,7 @@ export const QrCodeScanner = () => {
     return (
         <div className={s.container}>
             <QrReader
+                constraints={{ facingMode: 'environment' }}
                 scanDelay={1000}
                 onResult={scanHandler}
                 containerStyle={{ width: '500px' }}
